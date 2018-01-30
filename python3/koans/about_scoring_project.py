@@ -3,6 +3,8 @@
 
 from runner.koan import *
 
+from functools import reduce
+
 # Greed is a dice game where you roll up to five dice to accumulate
 # points.  The following "score" function will be used calculate the
 # score of a single roll of the dice.
@@ -31,10 +33,32 @@ from runner.koan import *
 # More scoring examples are given in the tests below:
 #
 # Your goal is to write the score method.
+def count_points(dice_occurs,dice_number):
+    number_occurs = dice_occurs[dice_number]
+
+    if number_occurs >= 3:
+        if dice_number == 1: 
+            return 1000 + (100 * (number_occurs - 3))
+        elif dice_number == 5: 
+            return 100 * dice_number + (50 * (number_occurs - 3))
+        else: 
+            return 100 * dice_number  
+    elif dice_number == 1:
+        return 100 * number_occurs
+    elif dice_number == 5:
+        return 50 * number_occurs
+    else:
+        return 0
+
 
 def score(dice):
-    # You need to write this method
-    pass
+    dice_occurs = { dice_number : dice.count(dice_number) for dice_number in range(1,7)}
+
+    points = ( count_points(dice_occurs,dice_number) for dice_number in dice_occurs.keys())
+
+    #print(list(points))
+
+    return reduce(lambda x, y: x + y, list(points))
 
 class AboutScoringProject(Koan):
     def test_score_of_an_empty_list_is_zero(self):
